@@ -103,6 +103,7 @@ resource "oci_core_instance" "ic_pub_vm-A" {
   }
 
   metadata = {
-    ssh_authorized_keys = join("\n", [for k in var.ic_pub_vm_A.ssh_authorized_keys : chomp(k)])
+    ssh_authorized_keys = [var.ssh_public_key]
+    #ssh_authorized_keys = join("\n", [for k in var.ic_pub_vm_A.ssh_authorized_keys : chomp(k)])
   }
 }
