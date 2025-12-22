@@ -60,6 +60,11 @@ variable "internet_gateway_A" {
 ############################################
 # Compute Instance
 ############################################
+variable "ssh_public_key" {
+  description = "SSH public key for OCI compute instance"
+  type        = string
+}
+
 
 variable "ic_pub_vm_A" {
   description = "The details of the compute instance"
@@ -75,6 +80,6 @@ variable "ic_pub_vm_A" {
       memory_in_gbs = 1
     }
     #ssh_authorized_keys = file("${path.module}/keys/oci_vm.pub")
-    ssh_authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNnbQuTKx235Dj0iOg0sU9E2wb6tAejtg+CILyKQrCY+93tKx31r4TO7/Q0l87SBzV8BMJNBCQDRRO0XyuSNqm4Bm8ZTgzx/g/DoIUxjoCsJ97zWlyqf3slVkS7rZV2bvXvzHRPEjmNtkz0CVBIuOxVC8F4ucp5NEPtnyYcAf4TpUaPEni2lNdEY3+2SWSlEOS8M+5E9t6SQNpPqLDJL4ztau27wDoF8gJrilR/kSwLdFF3YuhuZiIaR1HCiHVtH2qYBsR+MJ9AqcWqekoIplavaxW13Abr5GRt0jGNBDw6iB8PrlwUf5s0qTfWpknaooKRvcxJULuIJAZyY5MZ+t7NL9r5sHde3ewnpVzeJAXdDFIeoNCb6/fNUkO5aZvsigGsaGiswyO1zHQeDNYZ9naqVxzYVAvW87OwQO2h9i9tpxYkLqCj92X/XyDX4MDhU4NvAE7byhRn6ktxZHt7tzdtX+Rk21ohM+LVjnKokB4jUOpeJ2I6xSDEF84vSov3RtITBWDcxt0St3MEesry0L4D/kMe33E/XHp3+IkQvEdYEs2294ldRA8wEYK6zD5RMWWBsC3KnAhVOK7wNJk2TC7rEIsPmhcE+Glqgf6kABXq6klpZVialo1T/ufzwwVVVzrpiZEdMptmqpwsExuR218BkjBo/DB2BuwhMVv02RAiQ== dilip@Dilip_Pradeep"]
+    #ssh_authorized_keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNnbQuTKx235Dj0iOg0sU9E2wb6tAejtg+CILyKQrCY+93tKx31r4TO7/Q0l87SBzV8BMJNBCQDRRO0XyuSNqm4Bm8ZTgzx/g/DoIUxjoCsJ97zWlyqf3slVkS7rZV2bvXvzHRPEjmNtkz0CVBIuOxVC8F4ucp5NEPtnyYcAf4TpUaPEni2lNdEY3+2SWSlEOS8M+5E9t6SQNpPqLDJL4ztau27wDoF8gJrilR/kSwLdFF3YuhuZiIaR1HCiHVtH2qYBsR+MJ9AqcWqekoIplavaxW13Abr5GRt0jGNBDw6iB8PrlwUf5s0qTfWpknaooKRvcxJULuIJAZyY5MZ+t7NL9r5sHde3ewnpVzeJAXdDFIeoNCb6/fNUkO5aZvsigGsaGiswyO1zHQeDNYZ9naqVxzYVAvW87OwQO2h9i9tpxYkLqCj92X/XyDX4MDhU4NvAE7byhRn6ktxZHt7tzdtX+Rk21ohM+LVjnKokB4jUOpeJ2I6xSDEF84vSov3RtITBWDcxt0St3MEesry0L4D/kMe33E/XHp3+IkQvEdYEs2294ldRA8wEYK6zD5RMWWBsC3KnAhVOK7wNJk2TC7rEIsPmhcE+Glqgf6kABXq6klpZVialo1T/ufzwwVVVzrpiZEdMptmqpwsExuR218BkjBo/DB2BuwhMVv02RAiQ== dilip@Dilip_Pradeep"]
   }
 }
