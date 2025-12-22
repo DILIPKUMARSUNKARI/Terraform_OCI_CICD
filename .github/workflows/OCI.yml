@@ -1,63 +1,52 @@
 name: Create OCI With Terraform
+
 on:
   workflow_dispatch:
 
-jobs: 
+jobs:
   OCI-IaC-Deployment:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         shell: bash
         working-directory: OracleCloudInfrastructure/Terraform
+
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-              terraform_version: 1.6.6  
-      
-      - name: 'Write Config & Key Files'
-        run: |
-          mkdir ~/.oci
-          echo "[DEFAULT]" >> ~/.oci/config
-          echo "user=${{secrets.OCI_USER_OCID}}" >> ~/.oci/config
-          echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
-          echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
-          echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
-          echo "key_file=~/.oci/mykey.pem" >> ~/.oci/config
-          echo "${{secrets.OCI_KEY_FILE}}" >> ~/.oci/mykey.pem
-      
-      - name: 'Install OCI CLI'
-        run: |
-          curl -L -O https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-          chmod +x install.sh
-          ./install.sh --accept-all-defaults
-          echo "/home/runner/bin" >> $GITHUB_PATH
-          exec -l $SHELL
-      
-      - name: 'Fix OCI Config File Permissions'
-        run: |
-          oci setup repair-file-permissions --file /home/runner/.oci/config
-          oci setup repair-file-permissions --file /home/runner/.oci/mykey.pem
-     
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate
-  
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
-        continue-on-error: true
-  
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
+          terraform_version: 1.6.6
 
-      #- name: Terraform Apply
-      #  run: terraform apply -auto-approve
+      - name: Configure OCI credentials
+        run: |
+          mkdir -p /home/runner/.oci
+
+          cat <<EOF > /home/runner/.oci/config
+          [DEFAULT]
+          user=${{ secrets.OCI_USER_OCID }}
+          fingerprint=${{ secrets.OCI_FINGERPRINT }}
+          tenancy=${{ secrets.OCI_TENANCY_OCID }}
+          region=${{ secrets.OCI_REGION }}
+          key_file=/home/runner/.oci/oci_api_key.pem
+          EOF
+
+          echo "${{ secrets.OCI_KEY_FILE }}" > /home/runner/.oci/oci_api_key.pem
+          chmod 600 /home/runner/.oci/oci_api_key.pem
+          chmod 600 /home/runner/.oci/config
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Enable only after plan is verified
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
