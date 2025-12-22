@@ -21,8 +21,8 @@ jobs:
           echo "fingerprint=${{secrets.OCI_FINGERPRINT}}" >> ~/.oci/config
           echo "region=${{secrets.OCI_REGION}}" >> ~/.oci/config
           echo "tenancy=${{secrets.OCI_TENANCY_OCID}}" >> ~/.oci/config
-          echo "key_file=~/.oci/key.pem" >> ~/.oci/config
-          echo "${{secrets.OCI_KEY_FILE}}" >> ~/.oci/key.pem
+          echo "key_file=~/.oci/mykey.pem" >> ~/.oci/config
+          echo "${{secrets.OCI_KEY_FILE}}" >> ~/.oci/mykey.pem
       
       - name: 'Install OCI CLI'
         run: |
@@ -35,7 +35,7 @@ jobs:
       - name: 'Fix OCI Config File Permissions'
         run: |
           oci setup repair-file-permissions --file /home/runner/.oci/config
-          oci setup repair-file-permissions --file /home/runner/.oci/key.pem
+          oci setup repair-file-permissions --file /home/runner/.oci/mykey.pem
 
       - name: Terraform Init
         id: init
@@ -54,5 +54,5 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      #- name: Terraform Apply
+      #  run: terraform apply -auto-approve

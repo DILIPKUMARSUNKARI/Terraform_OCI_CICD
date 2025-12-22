@@ -1,0 +1,17 @@
+# Terraform runtime
+.terraform/
+**/.terraform/
+terraform.tfstate
+terraform.tfstate.*
+.terraform.lock.hcl
+
+# Terraform provider binaries (extra safety)
+terraform-provider-oci*.exe
+
+# Keys / secrets
+*.pem
+*.key
+*.pub
+
+# Editors
+.vscode/
