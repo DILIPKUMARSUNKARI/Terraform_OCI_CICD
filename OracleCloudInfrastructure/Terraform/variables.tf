@@ -70,7 +70,7 @@ variable "ic_pub_vm_A" {
     image_ocid : "ocid1.image.oc1.ap-hyderabad-1.aaaaaaaasujr5npyxygi4qsyrzpd33o4pujvcofmuhkxmyyvdmz33nlkac4q"
     shape : {
       #name          = "VM.Standard.E2.1.Micro"
-      name          = "VM.Standard.A1.Flex"
+      name          = "VM.Standard.E2.1.Micro"
       ocpus         = 1
       memory_in_gbs = 1
     }
