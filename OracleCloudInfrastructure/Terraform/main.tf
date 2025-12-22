@@ -1,5 +1,5 @@
 
-# main.tf
+# main.tf_
 locals {
   cmpt_name_prefix = "DK"
   time_f           = formatdate("HHmmss", timestamp())
