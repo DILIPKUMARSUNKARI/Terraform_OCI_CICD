@@ -13,5 +13,7 @@ terraform {
   backend "http" {
     address       = "https://objectstorage.ap-hyderabad-1.oraclecloud.com/p/8163yWk19sbpcLEshS1iIoGxqMGcAhC4BIekXs--ISsGuXbbxFAmXYPyl5fHWIyj/n/axojviqbbs15/b/my_cicd/o/terraform.tfstate"
     update_method = "PUT"
+
   }
+
 }

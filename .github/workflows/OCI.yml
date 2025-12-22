@@ -3,6 +3,10 @@ name: Create OCI With Terraform
 on:
   workflow_dispatch:
 
+concurrency:
+  group: terraform-oci
+  cancel-in-progress: false    
+
 jobs:
   OCI-IaC-Deployment:
     runs-on: ubuntu-latest
