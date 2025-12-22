@@ -48,5 +48,5 @@ jobs:
         run: terraform plan
 
       # Enable only after plan is verified
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
