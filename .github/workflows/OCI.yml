@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false    
 
 jobs:
-  OCI-IaC-Deployment:
+  plan:
     runs-on: ubuntu-latest
     env:
       TF_VAR_ssh_public_key: ${{ secrets.OCI_SSH_PUBLIC_KEY }}
@@ -18,18 +18,15 @@ jobs:
         working-directory: OracleCloudInfrastructure/Terraform
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
 
       - name: Configure OCI credentials
         run: |
           mkdir -p /home/runner/.oci
-
           cat <<EOF > /home/runner/.oci/config
           [DEFAULT]
           user=${{ secrets.OCI_USER_OCID }}
@@ -38,20 +35,56 @@ jobs:
           region=${{ secrets.OCI_REGION }}
           key_file=/home/runner/.oci/oci_api_key.pem
           EOF
-
           echo "${{ secrets.OCI_KEY_FILE }}" > /home/runner/.oci/oci_api_key.pem
-          chmod 600 /home/runner/.oci/oci_api_key.pem
-          chmod 600 /home/runner/.oci/config
+          chmod 600 /home/runner/.oci/*
 
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
+      - run: terraform init
+      - run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
 
-      # Enable only after plan is verified
+      - name: Upload plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: OracleCloudInfrastructure/Terraform/tfplan
+
+  apply:
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: production   # 👈 approval happens here
+    defaults:
+      run:
+        shell: bash
+        working-directory: OracleCloudInfrastructure/Terraform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Configure OCI credentials
+        run: |
+          mkdir -p /home/runner/.oci
+          cat <<EOF > /home/runner/.oci/config
+          [DEFAULT]
+          user=${{ secrets.OCI_USER_OCID }}
+          fingerprint=${{ secrets.OCI_FINGERPRINT }}
+          tenancy=${{ secrets.OCI_TENANCY_OCID }}
+          region=${{ secrets.OCI_REGION }}
+          key_file=/home/runner/.oci/oci_api_key.pem
+          EOF
+          echo "${{ secrets.OCI_KEY_FILE }}" > /home/runner/.oci/oci_api_key.pem
+          chmod 600 /home/runner/.oci/*
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: OracleCloudInfrastructure/Terraform
+      - name: Terraform Init
+        run: terraform init
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan
